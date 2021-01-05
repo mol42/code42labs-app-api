@@ -1,0 +1,29 @@
+{
+  "name": "code42labs-app-api",
+  "version": "1.0.0",
+  "description": "npm init -y",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mol42/code42labs-app-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mol42/code42labs-app-api/issues"
+  },
+  "homepage": "https://github.com/mol42/code42labs-app-api#readme",
+  "devDependencies": {
+    "@types/express": "^4.16.1",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "express": "^4.16.4"
+  }
+}

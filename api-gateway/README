@@ -1,0 +1,66 @@
+## nodejs projeleri genel olarak npm projesi olarak hazirlanir
+## biz de bu sekilde yapiyoruz ve npm projesi init ediyoruz.
+
+npm init -y
+
+### typescript alt yapisini dev dependency olarak kuruyoruz
+
+npm install -D typescript@3.3.3
+npm install -D tslint@5.12.1
+
+### test icin express framework server alt yapisini kuruyoruz normal sekilde 
+### IDE destegi icin typescript type'larini dev dependency olarak kuruyoruz
+
+npm install -S express@4.16.4
+npm install -D @types/express@4.16.1
+
+
+tsconfig.json
+
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist"
+  },
+  "lib": ["es2015"]
+}
+
+module: Module kodlarini uretme alt yapisinin tanimi, NodeJS commonjs alt yapisini kullaniyor
+target: Hedef dil seviyesi ( es6 mi es7 mi vs ).
+moduleResolution: compiler'a import isleminin neyi import edecegini belirtir ve NodeJS projesi oldugu icin node diyoruz.
+outDir: ts dosyalari islendikten sonra olusan js dosyalarinin nereye kaydedilecegini belirten yol.
+
+### package.json icindeki "start" scriptini update ederiz
+
+  "scripts": {
+    "start": "tsc && node dist/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+
+### en temel kodu olusturup run edelim
+
+app.ts ->
+
+import express from 'express';
+
+const app = express();
+const port = 3000;
+app.get('/', (req, res) => {
+  res.send('The sedulous hyena ate the antelope!');
+});
+app.listen(port, err => {
+  if (err) {
+    return console.error(err);
+  }
+  return console.log(`server is listening on ${port}`);
+});
+
+### ts kodunu run etmek icin asagidaki kodu calistirirz ve bu noktada typescript
+### compiler ts dosyalarini parse edip dist altina bundle halinde js halini olusturur
+### ve node bu js dosyasini run eder.
+
+npm start

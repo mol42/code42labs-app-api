@@ -1,0 +1,23 @@
+{
+  "name": "code42labs-app-micro-auth",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "tsc && cp .env dist/micro-auth/ && node dist/micro-auth/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^14.14.21",
+    "tslint": "^5.12.1",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "amqplib": "^0.6.0",
+    "bottlejs": "^2.0.0",
+    "dotenv": "^8.2.0",
+    "uuid": "^8.3.2"
+  }
+}

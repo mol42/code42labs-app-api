@@ -9,10 +9,8 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { v4 as uuidv4 } from "uuid";
 import randomString from "randomstring";
-import { Op, Model, ModelType, ModelStatic, Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import EmailValidator from "email-deep-validator";
-import MNC from "../common-lib/db/model-name-constants";
-import semver from "semver";
 import ERR_CONS from "../common-lib/config/error-constants";
 import UserModelIniter from "../common-lib/models/usermodel";
 //-----
@@ -180,8 +178,6 @@ const authMicoservice_signup = async function (requestData, response) {
             return response.failJSONString(SIGNUP_FORM_EMPTY);
         }
 
-        // TODO(tayfun) : Validate if username is OK...
-
         // remove invalid chars from username....
         const usernameWithoutInvalidChars = username.split(".").join("");
         const uppercasedReferralCode = referralCode.toUpperCase();
@@ -256,8 +252,8 @@ const authMicoservice_signup = async function (requestData, response) {
 };
 
 const authMicoservice_activate = async function (requestData, response) {
-    const { DBManager, cacheService } = diContext.bottle.container;
-    const UserModel = DBManager.getModelCache().getModel(MNC.UserModel);
+    const { cacheService, sequelize } = diContext.bottle.container;
+    const UserModel = UserModelIniter(sequelize, Sequelize);
     const { requestId } = requestData;
     let user;
     //---
@@ -283,7 +279,7 @@ const authMicoservice_activate = async function (requestData, response) {
 };
 
 const authMicroservice_resetPassword = async function (requestData, sessionUser, response) {
-    const { cacheService } = diContext.bottle.container;
+    const { cacheService } = diContext.container;
     const { email } = requestData;
     const { username } = sessionUser;
     const resetPasswordRequest = {
@@ -310,8 +306,8 @@ const authMicroservice_resetPassword = async function (requestData, sessionUser,
 };
 
 const authMicroservice_updatePassword = async function (requestData, response) {
-    const { DBManager, cacheService } = diContext.bottle.container;
-    const UserModel = DBManager.getModelCache().getModel(MNC.UserModel);
+    const { sequelize, cacheService } = diContext.bottle.container;
+    const UserModel = UserModelIniter(sequelize, Sequelize);
 
     const { email, code, password } = requestData;
     const [salt, saltedPassword] = generateSaltedPassword(email, password);

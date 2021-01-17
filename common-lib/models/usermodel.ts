@@ -48,7 +48,15 @@ export class IUserModel extends Model<UserAttributes, UserCreationAttributes>
   public updatedAt!: Date;
 }
 
+const GLOBAL = {
+  inited: false
+}
+
 export default (sequelize, DataTypes) => {
+  if (GLOBAL.inited) {
+    return IUserModel;
+  }
+
   IUserModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
     username: { type: DataTypes.STRING, unique: true },
@@ -80,6 +88,7 @@ export default (sequelize, DataTypes) => {
     modelName: "UserModel",
     tableName: "user"
   });
-
+  
+  GLOBAL.inited = true;
   return IUserModel;
 };

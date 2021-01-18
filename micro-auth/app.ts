@@ -70,20 +70,6 @@ const generateSaltedPassword = (email, password) => {
     return [salt, skey];
 };
 
-type IUser = {
-    id: number,
-    username: string,
-    countryId: number,
-    name: string,
-    lastName: string,
-    birthday: number,
-    email: string,
-    phone: number,
-    avatarId: number,
-    lastAnnouncement: string,
-    welcomed: boolean
-}
-
 const authMicoservice_login = async function (requestData, response) {
     const { cacheService, sequelize } = diContext.container;
     const UserModel = UserModelIniter(sequelize, Sequelize);

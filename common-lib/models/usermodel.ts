@@ -35,11 +35,11 @@ export class IUserModel extends Model<UserAttributes, UserCreationAttributes>
   public countryId !: number;
   public email!: string;
   public hashedPassword!: string;
-  public referralCode!: string;
+  public referralCode: string;
   public lastName!: string;
   public avatarId!: number;
-  public phone!: string;
-  public birthdate!: Date;
+  public phone: string;
+  public birthdate: Date;
   public welcomed!: boolean;
   public lastAnnouncement!: string;
   public salt!: string;
@@ -48,15 +48,7 @@ export class IUserModel extends Model<UserAttributes, UserCreationAttributes>
   public updatedAt!: Date;
 }
 
-const GLOBAL = {
-  inited: false
-}
-
 export default (sequelize, DataTypes) => {
-  if (GLOBAL.inited) {
-    return IUserModel;
-  }
-
   IUserModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
     username: { type: DataTypes.STRING, unique: true },
@@ -89,6 +81,5 @@ export default (sequelize, DataTypes) => {
     tableName: "user"
   });
   
-  GLOBAL.inited = true;
   return IUserModel;
 };

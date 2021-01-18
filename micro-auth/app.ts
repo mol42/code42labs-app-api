@@ -180,7 +180,7 @@ const authMicoservice_signup = async function (requestData, response) {
 
         // remove invalid chars from username....
         const usernameWithoutInvalidChars = username.split(".").join("");
-        const uppercasedReferralCode = referralCode.toUpperCase();
+        const uppercasedReferralCode = referralCode?.toUpperCase();
         const lowercasedEmail = email.toLowerCase();
 
         let foundUser = await UserModel.findOne({ where: { username: usernameWithoutInvalidChars }, raw: true });

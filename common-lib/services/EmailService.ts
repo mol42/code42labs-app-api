@@ -19,7 +19,7 @@ class EmailService {
                 service: "gmail",
                 auth: {
                     user: gmailFrom,
-                    pass: "___PASS_HERE___"
+                    pass: "11c0d34299"
                 }
             });
         }

@@ -1,4 +1,4 @@
-import MQClientService from "../services/MQClientService";
+import MQClientService from "../services/mq-client-service";
 // import Bottle type
 import Bottle from 'bottlejs';
 

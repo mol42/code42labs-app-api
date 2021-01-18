@@ -1,4 +1,4 @@
-import redisClient, { IRedisClient } from "./RedisClient";
+import redisClient, { IRedisClient } from "./redis-client";
 
 type GetFunction = {
     (key: string, doParse: boolean): Promise<any>

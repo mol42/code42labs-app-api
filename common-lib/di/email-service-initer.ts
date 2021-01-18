@@ -1,4 +1,4 @@
-import EmailService, { IEmailService as ref } from "../services/EmailService";
+import EmailService, { IEmailService as ref } from "../services/email-service";
 // import Bottle type
 import Bottle from 'bottlejs';
 

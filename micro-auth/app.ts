@@ -188,18 +188,12 @@ const authMicoservice_signup = async function (requestData, response) {
         //--
         let foundEmail = await UserModel.findOne({
             where: {
-                [Op.or]: [
-                    {
-                        email: {
-                            [Op.eq]: lowercasedEmail
-                        }
-                    },
-                    {
-                        email: {
-                            [Op.eq]: emailWithoutDots
-                        }
+                email: {
+                    [Op.or]: {
+                        [Op.eq]: lowercasedEmail,
+                        [Op.eq]: emailWithoutDots
                     }
-                ]
+                }
             },
             raw: true
         });

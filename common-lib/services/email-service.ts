@@ -1,4 +1,4 @@
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 let globalTransporter;
 const gmailFrom = "code42labsapp.emailer@gmail.com";

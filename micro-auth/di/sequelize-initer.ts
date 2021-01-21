@@ -1,8 +1,4 @@
-// DB INITIALIZATION
-import { Sequelize } from "sequelize";
 import SequelizeFactory from "../../common-lib/db/sequelize-factory";
-// model imports here
-// import UserModelIniter, { IUserModel } from "../../common-lib/models/usermodel";
 
 export function initer(bottle) {
     bottle.provider("sequelize", function () {

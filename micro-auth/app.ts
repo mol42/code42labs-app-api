@@ -137,7 +137,7 @@ const authMicoservice_login = async function (requestData, response) {
                 expiresIn: jwtExpirySeconds
             });
 
-            await cacheService.set(xAuthToken, JSON.stringify(redisSessionUser), new Date().getTime() / 1000 + 86400);
+            await cacheService.set(xAuthToken, JSON.stringify(redisSessionUser), Math.round(new Date().getTime() / 1000 + 86400));
 
             return response.okJSONString({
                 user: sessionUserObj,
@@ -211,7 +211,7 @@ const authMicoservice_signup = async function (requestData, response) {
 
         const requestId = uuidv4();
 
-        await cacheService.set(requestId, JSON.stringify(signUpRequest), new Date().getTime() / 1000 + 86400 * 5);
+        await cacheService.set(requestId, JSON.stringify(signUpRequest), Math.round(new Date().getTime() / 1000 + 86400 * 5));
         sendActivationEmail(requestId, signUpRequest);
         return response.okJSONString({});
     } catch (err) {
@@ -265,7 +265,7 @@ const authMicroservice_resetPassword = async function (requestData, sessionUser,
     console.log("authMicroservice_resetPassword requestId", requestId);
 
     try {
-        await cacheService.set(requestId, JSON.stringify(resetPasswordRequest), new Date().getTime() / 1000 + 86400 * 5);
+        await cacheService.set(requestId, JSON.stringify(resetPasswordRequest), Math.round(new Date().getTime() / 1000 + 86400 * 5));
         sendPasswordResetEmail(requestId, resetPasswordRequest);
         return response.okJSONString({});
     } catch (err) {

@@ -16,7 +16,9 @@ class EmailService {
         } else {
             // USE GMAIL ON LOCAL..
             globalTransporter = nodemailer.createTransport({
-                service: "gmail",
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
                 auth: {
                     user: gmailFrom,
                     pass: "11c0d34299"

@@ -6,13 +6,12 @@ import {
 // These are all the attributes in the User model
 interface UserAttributes {
   id: number,
-  username: string,
-  name: string,
+  firstName: string,
+  lastName: string,
   countryId: number,
   email: string,
   hashedPassword: string,
   referralCode: string,
-  lastName: string,
   avatarId: number,
   phone: string,
   birthdate: Date,
@@ -30,13 +29,12 @@ interface UserCreationAttributes extends Optional<UserAttributes, "id"> { }
 export class IUserModel extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
-  public username!: string;
-  public name!: string;
+  public firstName!: string;
+  public lastName!: string;
   public countryId !: number;
   public email!: string;
   public hashedPassword!: string;
   public referralCode: string;
-  public lastName!: string;
   public avatarId!: number;
   public phone: string;
   public birthdate: Date;
@@ -51,13 +49,12 @@ export class IUserModel extends Model<UserAttributes, UserCreationAttributes>
 export default (sequelize, DataTypes) => {
   IUserModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    username: { type: DataTypes.STRING, unique: true },
-    name: DataTypes.STRING,
+    firstName: { type: DataTypes.STRING, field: "first_name" },
+    lastName: { type: DataTypes.STRING, field: "last_name" },
     countryId: { type: DataTypes.INTEGER, field: "country_id" },
     email: { type: DataTypes.STRING, unique: true },
     hashedPassword: { type: DataTypes.STRING, field: "hashed_password" },
     referralCode: { type: DataTypes.STRING, field: "referral_code" },
-    lastName: { type: DataTypes.STRING, field: "last_name" },
     avatarId: { type: DataTypes.INTEGER, field: "avatar_id" },
     phone: { type: DataTypes.STRING },
     birthdate: DataTypes.DATE,
@@ -80,6 +77,6 @@ export default (sequelize, DataTypes) => {
     modelName: "UserModel",
     tableName: "user"
   });
-  
+
   return IUserModel;
 };

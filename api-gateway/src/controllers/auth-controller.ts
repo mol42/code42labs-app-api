@@ -14,10 +14,10 @@ const diContainer = diContext.container;
 
 AuthorizationController.signUp = async function (req, res) {
     const { mqClientService, responseUtil } = diContainer;
-    const { username, email, password, referralCode } = req.body;
+    const { firstName, lastName, email, password, referralCode } = req.body;
     const resultAsJsonString = await mqClientService.callRPCQueue(
         AUTH_RPC_QUEUE,
-        JSON.stringify({ command: "AUTH_SIGNUP", data: { username, email, password, referralCode }, commandId: uuidv4() })
+        JSON.stringify({ command: "AUTH_SIGNUP", data: { firstName, lastName, email, password, referralCode }, commandId: uuidv4() })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 };

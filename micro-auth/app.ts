@@ -35,20 +35,20 @@ const {
     SIGNUP_INVALID_EMAIL
 } = ERR_CONS;
 
-const sendActivationEmail = function (requestId, { username, email }) {
+const sendActivationEmail = function (requestId, { firstName, email }) {
     const { emailService } = diContext.bottle.container;
     const activationEmail = TmplActivationEmail({
-        username,
+        firstName,
         requestId
     });
 
     emailService.sendEmail(email, "Email adresinizi onaylayınız", activationEmail);
 };
 
-const sendPasswordResetEmail = function (requestId, { username, email, code }) {
+const sendPasswordResetEmail = function (requestId, { firstName, email, code }) {
     const { emailService } = diContext.bottle.container;
     const activationEmail = TmplPasswordResetEmail({
-        username,
+        firstName,
         code
     });
 
@@ -95,10 +95,9 @@ const authMicoservice_login = async function (requestData, response) {
         } else {
             let {
                 id,
-                username,
-                countryId,
-                name,
+                firstName,
                 lastName,
+                countryId,
                 birthdate,
                 email,
                 phone,
@@ -109,10 +108,9 @@ const authMicoservice_login = async function (requestData, response) {
 
             let sessionUserObj = {
                 id,
-                username,
-                countryId,
-                name,
+                firstName,
                 lastName,
+                countryId,
                 birthdate,
                 email,
                 phone,
@@ -123,10 +121,9 @@ const authMicoservice_login = async function (requestData, response) {
             };
             let redisSessionUser = {
                 id,
-                username,
-                countryId,
-                name,
+                firstName,
                 lastName,
+                countryId,
                 birthdate,
                 email,
                 phone,
@@ -158,22 +155,15 @@ const authMicoservice_signup = async function (requestData, response) {
     //---
     try {
         const UserModel = UserModelIniter(sequelize, Sequelize);
-        const { username, email, password, referralCode } = requestData;
+        const { firstName, lastName, email, password, referralCode } = requestData;
 
-        if (!username || !email || !password) {
+        if (!firstName || !lastName || !email || !password) {
             return response.failJSONString(SIGNUP_FORM_EMPTY);
         }
 
         // remove invalid chars from username....
-        const usernameWithoutInvalidChars = username.split(".").join("");
         const uppercasedReferralCode = referralCode?.toUpperCase();
         const lowercasedEmail = email.toLowerCase();
-
-        let foundUser = await UserModel.findOne({ where: { username: usernameWithoutInvalidChars }, raw: true });
-
-        if (foundUser) {
-            return response.failJSONString(USERNAME_TAKEN);
-        }
 
         let emailLocal, emailDomain;
         try {
@@ -205,9 +195,8 @@ const authMicoservice_signup = async function (requestData, response) {
         let [salt, saltedPassword] = generateSaltedPassword(lowercasedEmail, password);
 
         let signUpRequest = {
-            username: usernameWithoutInvalidChars,
-            name: "",
-            lastName: "",
+            firstName: firstName,
+            lastName: lastName,
             birthday: "",
             phone: "",
             email: lowercasedEmail,
@@ -248,12 +237,12 @@ const authMicoservice_activate = async function (requestData, response) {
         sendNewUserInfo(user.email);
 
         return TmplMembershipActivated({
-            username: user.username
+            firstName: user.firstName
         });
     } catch (err) {
         console.log(err);
         return TmplMembershipActivationError({
-            username: user ? user.username : ""
+            firstName: user ? user.firstName : ""
         });
     }
 };
@@ -261,9 +250,9 @@ const authMicoservice_activate = async function (requestData, response) {
 const authMicroservice_resetPassword = async function (requestData, sessionUser, response) {
     const { cacheService } = diContext.container;
     const { email } = requestData;
-    const { username } = sessionUser;
+    const { firstName } = sessionUser;
     const resetPasswordRequest = {
-        username,
+        firstName,
         email,
         code: randomString.generate({
             length: 6,

@@ -237,7 +237,7 @@ const template = Handlebars.compile(`
                                                 <td>
                                                     <div class="contentEditableContainer contentTextEditable">
                                                         <div style='font-family: Roboto, sans-serif;text-align:left;' class="contentEditable">
-                                                            <p style='font-size:18px;color:#555;'>Merhaba <b>{{username}} !</b>
+                                                            <p style='font-size:18px;color:#555;'>Merhaba <b>{{firstName}} !</b>
                                                             <br/><br />
                                                             <p style='font-size:18px;color:#555;'>
                                                                 <b>Code42Labs</b> dünyasına hoş geldiniz !

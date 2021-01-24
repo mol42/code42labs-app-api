@@ -1,0 +1,11 @@
+API ALT YAPISINDAKI KILIT KUTUPHANELER
+
+* express
+    -> api gateway projesinde kullaniliyor. HTTP isteklerini karsilamamizi sagliyor
+* amqlib
+    -> rabbitMQ ile iletisim kurarak mesaj gonderip mesaj almamizi sagliyor
+* bottlejs
+    -> dependency injection sayesinde servislerimizi lazy load sekilde yaratmamizi sagliyor.
+* sequelize
+    -> MySQL veritabani ile iliskili veri kaydetme/guncelleme vb islemleri model yapisi sayesinde
+       cok kolaylastiriyor.

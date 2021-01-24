@@ -1,0 +1,17 @@
+* to create a new database 
+    CREATE DATABASE `code42labsapp_db` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
+
+- npx sequelize-cli model:generate --name ModelName --attributes tmpAttribute:string 
+    -> this will create a model that is compatible with migration library
+
+- npx sequelize-cli db:migrate 
+    -> this will create db and tables
+
+- npx sequelize-cli migration:create --name modify_users_add_new_fields
+    -> this will create a JS script file which adds/removes/updates/.. tables
+
+- npx sequelize-cli seed:generate --name demo-user
+    -> this will create a JS script file which inserts data into the db
+
+- npx sequelize-cli db:seed:all 
+    -> this will insert demo data into tables

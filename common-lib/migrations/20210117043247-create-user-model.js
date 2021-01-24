@@ -8,8 +8,8 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      firstName: { type: DataTypes.STRING, field: "first_name" },
-      lastName: { type: DataTypes.STRING, field: "last_name" },
+      firstName: { type: Sequelize.STRING, field: "first_name" },
+      lastName: { type: Sequelize.STRING, field: "last_name" },
       countryId: { type: Sequelize.INTEGER, field: "country_id" },
       email: { type: Sequelize.STRING, unique: true },
       hashedPassword: { type: Sequelize.STRING, field: "hashed_password" },

@@ -42,6 +42,8 @@ const sendActivationEmail = function (requestId, { firstName, email }) {
         requestId
     });
 
+    console.log(activationEmail);
+
     emailService.sendEmail(email, "Email adresinizi onaylayınız", activationEmail);
 };
 

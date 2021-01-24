@@ -126,9 +126,9 @@ const authMicoservice_login = async function (requestData, response) {
                 firstName,
                 lastName,
                 countryId,
-                birthdate,
+                // birthdate,
                 email,
-                phone,
+                // phone,
                 avatarId,
                 showAnnouncement: false,
                 announcementVersion
@@ -156,6 +156,9 @@ const authMicoservice_signup = async function (requestData, response) {
     const { cacheService, sequelize } = diContext.container;
     //---
     try {
+        // UserModelIniter sequelize instance yardimi ile acilmis olan
+        // baglanti uzerinde bir model tanimlamasi yapmamizi saglar ve
+        // bu sayede model uzerinden query calistirabiliriz.
         const UserModel = UserModelIniter(sequelize, Sequelize);
         const { firstName, lastName, email, password, referralCode } = requestData;
 
@@ -169,6 +172,12 @@ const authMicoservice_signup = async function (requestData, response) {
 
         let emailLocal, emailDomain;
         try {
+            // Bu noktadaki amac gmail "." ile ayirdigimiz emailleri aslinda nokta yokmus
+            // gibi kabul ediyor ve biz bir email'in sistem var olup olmadigini kontrol
+            // etmek istersek ayni email farkli sekillerde barinabilecegi icin bir ihtimal
+            // istedigimiz essiz email durumuna erisemiyoruz ve dolayisi ile email'den "."
+            // karakteri cikarilmis sekilde essizlik kontrolu yapiyoruz ve DB'ye kaydederken
+            // normal sekilde kaydediyoruz bu sayede email atarken sorun yasamayiz.
             [emailLocal, emailDomain] = EmailValidator.extractAddressParts(lowercasedEmail);
         } catch (err) {
             return response.failJSONString(SIGNUP_INVALID_EMAIL);
@@ -178,6 +187,8 @@ const authMicoservice_signup = async function (requestData, response) {
         // for ex : tayfun.y@gmail,].com vs tayfuny@gmail.com
         let emailWithoutDots = `${emailLocal.split(".").join("")}@${emailDomain}`;
         //--
+        // Sequelize ile model query islemleri artik Promise destekliyor yani await
+        /// diyerek islemin sonucunu bekliyoruz.
         let foundEmail = await UserModel.findOne({
             where: {
                 email: {
@@ -222,6 +233,8 @@ const authMicoservice_signup = async function (requestData, response) {
     }
 };
 
+// Rediste saklanan signup form bilgilerini aktive edip veritabaninda
+// user'i gercekten olusturdugumuz endpoint
 const authMicoservice_activate = async function (requestData, response) {
     const { cacheService, sequelize } = diContext.bottle.container;
     const UserModel = UserModelIniter(sequelize, Sequelize);

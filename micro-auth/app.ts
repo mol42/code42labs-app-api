@@ -308,6 +308,8 @@ const MQ_CONN_STR = `amqp://${process.env.MQ_USER}:${process.env.MQ_PASS}@${proc
 
 console.log("MQ_CONN_STR", MQ_CONN_STR);
 
+// amqplib yardimi ile RabbitMQ'ye baglanti aciyoruz ve belirledigimiz
+// message queue kanalindan mesajlari dinlemeye basliyoruz.
 amqp.connect(MQ_CONN_STR, function (error0, connection) {
     if (error0) {
         throw error0;
@@ -316,6 +318,7 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
         if (error1) {
             throw error1;
         }
+        // dinlemek istedigimiz queue kanalinin adi
         const queue = AUTH_RPC_QUEUE;
 
         channel.assertQueue(queue, {
@@ -327,8 +330,12 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
             //-----
             const authCommandDataJSON = msg.content.toString();
             console.log("incoming command", authCommandDataJSON);
+            // MQ uzerinden string data gonderdigimiz icin JSON.parse
+            // islemi yaparak datamizi JS objesine donstururuz.
             const authCommandData = JSON.parse(authCommandDataJSON);
             const responseDataHolder = { data: null };
+            // authCommandData Api gateway tarafindan belirli bir standart data yapisina gore
+            // hazirlanip MQ'ye gonderilen mesaj icerigidir.
             const { command, data, sessionUser } = authCommandData;
             const response = new GenericApiResponse();
             //------

@@ -1,11 +1,11 @@
 import Bottle from "bottlejs";
 
 export default {
-    initContext(diContext: any, initializers: Array<any>) {
+    initContext(diContext: any, initers: Array<any>) {
         const bottle = new Bottle();
 
-        for (let i = 0; i < initializers.length; i++) {
-            initializers[i](bottle);
+        for (let i = 0; i < initers.length; i++) {
+            initers[i](bottle);
         }
 
         diContext.bottle = bottle;

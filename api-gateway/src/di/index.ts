@@ -17,6 +17,12 @@ export const diContext: DiContext = {
 };
 
 export function initializeDI() {
+    // api-gateway projesinde kullanilan ve DI icine kaydetmek istedigimiz
+    // servislerin initer'larini import edip biz dizi haline getiriyoruz.
     const initializers = [responseUtilIniter, mqClientServiceIniter];
+    // DiHelper yardimi ile api-gateway icinde kullandigimiz DiContext
+    // objesini bottlejs ile dolduruyoruz ve ayrica initer metodlari
+    // calistirip ilgilendigimiz servislerin dependency injection icine
+    // kaydolmasini sagliyoruz.
     DiHelper.initContext(diContext, initializers);
 }

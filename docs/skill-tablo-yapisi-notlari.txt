@@ -1,0 +1,32 @@
+
+**** skill ****
+
+- programala dili
+    - javascript
+    - c++
+    - vs vs
+- framework vb
+    - React
+    - Flutter
+- dependencyleri olabiliyor
+    - ornegin React icin oncelikle Typescript veya Javascript bilmek lazim
+    - kullanici bu bilincte olarak hareket edecek.
+
+*** favori skiller ***
+
+- takip edilen skiller
+- kullaniciya ozel liste
+
+
+*** skill steps ***
+
+- skill'i ogrenmek icin tamamlanmasi gereken her parca
+- her skill tam ogrenildigini temsil eden kritik parcalardan olusur
+  yani bir skill'i tam ogrenmek icin her parcayi bilmeye gerek yok
+  dolayisi ile bunu belirten bir flag gerekli
+
+*** skill step resources ***
+
+- her skill stepi icin internetteki kaynaklara linkler
+- video, yaziya link vs
+- 

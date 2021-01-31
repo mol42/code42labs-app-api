@@ -50,7 +50,7 @@ export default (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: "SkillModel",
-    tableName: "skill"
+    tableName: "skills"
   });
 
   return ISkillModel;

@@ -45,7 +45,7 @@ export default (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: "LanguageModel",
-    tableName: "language"
+    tableName: "languages"
   });
 
   return ILanguageModel;

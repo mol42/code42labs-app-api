@@ -39,7 +39,7 @@ export default (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: "UserFavoriteSkillModel",
-    tableName: "user__favorite_skill"
+    tableName: "user__favorite_skills"
   });
 
   return IUserFavoriteSkillModel;

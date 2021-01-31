@@ -75,7 +75,7 @@ export default (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: "UserModel",
-    tableName: "user"
+    tableName: "users"
   });
 
   return IUserModel;

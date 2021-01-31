@@ -21,6 +21,7 @@ export class IUserSettingsModel extends Model<UserSettingsAttributes, UserCreati
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public userId!: number;
   public languageOptions: JSON;
+  // dark or white theme
   public selectedTheme: number;
   public createdAt!: Date;
   public updatedAt!: Date;
@@ -44,8 +45,8 @@ export default (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: "UserSkillProgressModel",
-    tableName: "user__skill_progress"
+    modelName: "UserSettingsModel",
+    tableName: "user__settings"
   });
 
   return IUserSettingsModel;

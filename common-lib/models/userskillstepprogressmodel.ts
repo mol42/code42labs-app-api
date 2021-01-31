@@ -47,7 +47,7 @@ export default (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: "UserSkillProgressModel",
-    tableName: "user__skill_progress"
+    tableName: "user__skill_step_progresses"
   });
 
   return IUserSkillStepProgressModel;

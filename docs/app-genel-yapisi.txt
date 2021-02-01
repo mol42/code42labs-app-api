@@ -1,0 +1,31 @@
+
+** Dashboard Tabi **
+
+- Haberler
+    - Kendi derledigim gunluk haberler
+    - Herhangi bir konudan olabilir eger kullanicinin takip ettigi
+- Son aksiyonlar ?
+    - son 5 aksiyonun listesi
+- Favori skill'lerinden ilk 5'inin gelismeleri
+    - ya da hepsinin duruma gore karar vermek lazim
+- 
+
+*** Takip listem tabi ***
+
+- Takibe aldigi skillerin listesinin yer aldigi tab
+    - Yuzlerce skill arasindan asil takip ettiklerine hizlica erismek isteyecek kullanici
+    bu tab sayesinde bunu saglayabilecekler
+
+
+*** Skiller tabi ***
+
+- Skill aramasi yapabilecegi liste
+    - Yuzlerce skill yer alacak ve ust kisimdaki bir filtre araciligi ile arama yapabilecek
+
+
+*** Ayarlar tabi ***
+
+- Kullanici ayarlari
+- Feedback formu
+- Tema ayarlari
+- vb ayarlar bu tab icinde yer alacak

@@ -4,10 +4,14 @@ import {
   Optional
 } from 'sequelize';
 
+interface FavoritesJSON extends JSON {
+  items: any
+}
+
 interface UserFavoriteSkillAttributes {
   id: number,
   userId: number,
-  skillId: number,
+  favorites: FavoritesJSON,
   createdAt: Date,
   updatedAt: Date
 }
@@ -19,7 +23,7 @@ export class IUserFavoriteSkillModel extends Model<UserFavoriteSkillAttributes, 
   implements UserFavoriteSkillAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public userId!: number;
-  public skillId!: number;
+  public favorites!: FavoritesJSON;
   public createdAt!: Date;
   public updatedAt!: Date;
 }
@@ -28,7 +32,7 @@ export default (sequelize, DataTypes) => {
   IUserFavoriteSkillModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
     userId: { type: DataTypes.BIGINT, field: "user_id" },
-    skillId: { type: DataTypes.INTEGER, field: "skill_id" },
+    favorites: { type: DataTypes.JSON, field: "favorites" },
     createdAt: {
       type: DataTypes.DATE,
       field: "created_at",

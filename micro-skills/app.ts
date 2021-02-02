@@ -6,21 +6,137 @@ import { initializeDI, diContext } from "./di";
 import GenericApiResponse from "../common-lib/models/generic-api-response";
 import amqp from "amqplib/callback_api";
 import { Op, Sequelize } from "sequelize";
-import ERR_CONS from "../common-lib/config/error-constants";
-import UserModelIniter from "../common-lib/models/usermodel";
+// import ERR_CONS from "../common-lib/config/error-constants";
+import SkillModelIniter from "../common-lib/models/skillmodel";
+import UserFavoriteSkillModelIniter from "../common-lib/models/userfavoriteskillmodel";
+import UserSkillStepProgressModelIniter from "../common-lib/models/userskillstepprogressmodel";
+import SkillTypeModelIniter from "../common-lib/models/skilltypemodel";
+import SkillStepModelIniter from "../common-lib/models/skillstepmodel";
+import SkilStepResourceModelIniter from "../common-lib/models/skillstepresourcemodel";
 //-----
 
 const SKILLS_RPC_QUEUE = "C42_SKILLS_RPC_QUEUE";
-const {
-    USERNAME_TAKEN,
-    UNKOWN_ERROR,
-    AUTH_ERROR,
-    PASSWORD_UPDATE_ERROR,
-    AUTH_DATA_MISSING,
-    SIGNUP_FORM_EMPTY,
-    SIGNUP_ALREADY_SIGNED_UP,
-    SIGNUP_INVALID_EMAIL
-} = ERR_CONS;
+
+const skillsMicro_fetchAllSkills = async function (requestData, response: GenericApiResponse) {
+    const { sequelize } = diContext.container;
+    try {
+        const SkillModel = SkillModelIniter(sequelize, Sequelize);
+
+        const allSkills = await SkillModel.findAll({
+            raw: true
+        });
+
+        return response.okJSONString(allSkills);
+    } catch (err) {
+        return response.failJSONString();
+    }
+}
+
+const skillsMicro_fetchFavoriteSkills = async function (requestData, response: GenericApiResponse, sessionUser) {
+    const { sequelize } = diContext.container;
+    try {
+        const SkillModel = SkillModelIniter(sequelize, Sequelize);
+        const UserFavoriteSkillModel = UserFavoriteSkillModelIniter(sequelize, Sequelize);
+
+        const userId = sessionUser.id;
+
+        const allUserFavoriteSkills = await UserFavoriteSkillModel.findAll({
+            where: {
+                userId
+            }, raw: true
+        });
+        const allFavoriteSkills = await SkillModel.findAll({
+            where: {
+                id: allUserFavoriteSkills.map((favSkill) => favSkill.skillId)
+            },
+            raw: true
+        });
+
+        return response.okJSONString(allFavoriteSkills);
+    } catch (err) {
+        return response.failJSONString();
+    }
+}
+
+const skillsMicro_fetchSkillProgress = async function (requestData, response: GenericApiResponse, sessionUser) {
+    const { sequelize } = diContext.container;
+    try {
+        const UserSkillStepProgressModel = UserSkillStepProgressModelIniter(sequelize, Sequelize);
+
+        const { skillId } = requestData;
+        const userId = sessionUser.id;
+
+        const userSkillProgress = await UserSkillStepProgressModel.findAll({
+            where: {
+                skillId,
+                userId
+            }, raw: true
+        });
+
+        return response.okJSONString(userSkillProgress);
+    } catch (err) {
+        return response.failJSONString();
+    }
+}
+
+const skillsMicro_fetchSkillTypes = async function (requestData, response: GenericApiResponse) {
+    const { sequelize } = diContext.container;
+    try {
+        const SkillTypeModel = SkillTypeModelIniter(sequelize, Sequelize);
+
+        const skillTypes = await SkillTypeModel.findAll({
+            raw: true
+        });
+
+        return response.okJSONString(skillTypes);
+    } catch (err) {
+        return response.failJSONString();
+    }
+}
+
+const skillsMicro_fetchSkillSteps = async function (requestData, response: GenericApiResponse, sessionUser) {
+    const { sequelize } = diContext.container;
+    try {
+        const SkillStepModel = SkillStepModelIniter(sequelize, Sequelize);
+
+        const { skillId } = requestData;
+
+        const skillSteps = await SkillStepModel.findAll({
+            where: {
+                skillId
+            },
+            raw: true
+        });
+
+        return response.okJSONString(skillSteps);
+    } catch (err) {
+        return response.failJSONString();
+    }
+}
+
+const skillsMicro_fetchSkillStepsResources = async function (requestData, response: GenericApiResponse, sessionUser) {
+    const { sequelize } = diContext.container;
+    try {
+        const SkilStepResourceModel = SkilStepResourceModelIniter(sequelize, Sequelize);
+
+        const { skillId } = requestData;
+        const { languageOptions } = sessionUser;
+
+        const skillStepResources = await SkilStepResourceModel.findAll({
+            where: {
+                skillId,
+                languageId: {
+                    [Op.in]: languageOptions.prefferedLanguages
+                }
+            },
+            raw: true
+        });
+
+        return response.okJSONString(skillStepResources);
+    } catch (err) {
+        return response.failJSONString();
+    }
+}
 
 /*
  **********************************************************************
@@ -60,8 +176,18 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
             const { command, data, sessionUser } = authCommandData;
             const response = new GenericApiResponse();
             //------
-            if (command === "AUTH_LOGIN") {
-
+            if (command === "FETCH_ALL_SKILLS") {
+                responseDataHolder.data = await skillsMicro_fetchAllSkills(data, response);
+            } else if (command === "FETCH_FAVORITE_SKILLS") {
+                responseDataHolder.data = await skillsMicro_fetchFavoriteSkills(data, response, sessionUser);
+            } else if (command === "FETCH_SKILL_PROGRESS") {
+                responseDataHolder.data = await skillsMicro_fetchSkillProgress(data, response, sessionUser);
+            } else if (command === "FETCH_SKILL_TYPES") {
+                responseDataHolder.data = await skillsMicro_fetchSkillTypes(data, response);
+            } else if (command === "FETCH_SKILL_STEPS") {
+                responseDataHolder.data = await skillsMicro_fetchSkillSteps(data, response, sessionUser);
+            } else if (command === "FETCH_SKILL_STEP_RESOURCES") {
+                responseDataHolder.data = await skillsMicro_fetchSkillStepsResources(data, response, sessionUser);
             } else {
                 responseDataHolder.data = response.failJSONString();
             }
@@ -78,4 +204,3 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
 });
 
 initializeDI();
-

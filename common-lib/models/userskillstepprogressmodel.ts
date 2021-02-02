@@ -6,6 +6,7 @@ import {
 
 interface UserSkillStepProgressAttributes {
   id: number,
+  userId: number,
   skillId: number,
   progress: JSON,
   createdAt: Date,
@@ -18,6 +19,7 @@ interface UserSkillStepProgressCreationAttributes extends Optional<UserSkillStep
 export class IUserSkillStepProgressModel extends Model<UserSkillStepProgressAttributes, UserSkillStepProgressCreationAttributes>
   implements UserSkillStepProgressAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+  public userId: number;
   public skillId!: number;
   // Burada progress alani icin JSON kullanma amacimiz tablo yapisini basitlestirmek
   // eger JSON kullanmasaydik yeni bir tablo yaratip onun icine kullanicinin tamamladigi
@@ -32,6 +34,7 @@ export class IUserSkillStepProgressModel extends Model<UserSkillStepProgressAttr
 export default (sequelize, DataTypes) => {
   IUserSkillStepProgressModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
+    userId: { type: DataTypes.BIGINT, field: "user_id" },
     skillId: { type: DataTypes.INTEGER, field: "skill_id" },
     progress: { type: DataTypes.JSON, field: "progress" },
     createdAt: {

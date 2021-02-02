@@ -6,6 +6,7 @@ import {
 
 interface UserFavoriteSkillAttributes {
   id: number,
+  userId: number,
   skillId: number,
   createdAt: Date,
   updatedAt: Date
@@ -17,6 +18,7 @@ interface UserFavoriteSkillCreationAttributes extends Optional<UserFavoriteSkill
 export class IUserFavoriteSkillModel extends Model<UserFavoriteSkillAttributes, UserFavoriteSkillCreationAttributes>
   implements UserFavoriteSkillAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+  public userId!: number;
   public skillId!: number;
   public createdAt!: Date;
   public updatedAt!: Date;
@@ -25,6 +27,7 @@ export class IUserFavoriteSkillModel extends Model<UserFavoriteSkillAttributes, 
 export default (sequelize, DataTypes) => {
   IUserFavoriteSkillModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
+    userId: { type: DataTypes.BIGINT, field: "user_id" },
     skillId: { type: DataTypes.INTEGER, field: "skill_id" },
     createdAt: {
       type: DataTypes.DATE,

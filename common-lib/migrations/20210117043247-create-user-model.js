@@ -6,7 +6,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       firstName: { type: Sequelize.STRING, field: "first_name" },
       lastName: { type: Sequelize.STRING, field: "last_name" },
@@ -19,6 +19,8 @@ module.exports = {
       birthdate: Sequelize.DATE,
       welcomed: { type: Sequelize.BOOLEAN, field: "welcomed" },
       lastAnnouncement: { type: Sequelize.STRING, field: "last_announcement" },
+      languageOptions: { type: Sequelize.JSON, field: "language_options" },
+      selectedTheme: { type: Sequelize.INTEGER, field: "selected_theme" },
       salt: Sequelize.STRING,
       status: Sequelize.TINYINT,
       createdAt: {

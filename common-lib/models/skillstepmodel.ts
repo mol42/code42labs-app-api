@@ -7,6 +7,7 @@ import {
 interface SkillStepAttributes {
   id: number,
   skillId: number,
+  name: string,
   order: number,
   shortDescription: string,
   longDescription: string,
@@ -22,6 +23,7 @@ export class ISkillStepModel extends Model<SkillStepAttributes, SkillStepCreatio
   implements SkillStepAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public skillId!: number;
+  public name!: string;
   public order: number;
   public shortDescription: string;
   public longDescription: string;
@@ -33,6 +35,7 @@ export default (sequelize, DataTypes) => {
   ISkillStepModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
     skillId: { type: DataTypes.INTEGER, field: "skill_id" },
+    name: { type: DataTypes.TEXT, field: "name" },
     order: { type: DataTypes.INTEGER, field: "order" },
     shortDescription: { type: DataTypes.TEXT, field: "short_description" },
     longDescription: { type: DataTypes.TEXT, field: "long_description" },

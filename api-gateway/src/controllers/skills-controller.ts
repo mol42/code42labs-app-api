@@ -4,7 +4,11 @@ const SKILLS_RPC_QUEUE = "C42_SKILLS_RPC_QUEUE";
 const SkillsController = {
     fetchAllSkills: null,
     fetchAllFavoriteSkills: null,
-    addOrRemoveSkillToFavorites: null
+    updateFavoriteSkills: null,
+    fetchSkillSteps: null,
+    fetchSkillStepResources: null,
+    fetchUserSkillProgress: null,
+    updateUserSkillProgress: null
 };
 const diContainer = diContext.container;
 const controllerHelperService = diContainer.controllerHelperService;
@@ -32,15 +36,58 @@ SkillsController.fetchAllFavoriteSkills = controllerHelperService.controller(asy
     responseUtil.sendJSON(res, resultAsJsonString);
 });
 
-SkillsController.addOrRemoveSkillToFavorites = controllerHelperService.controller(async function (req, res, sessionUser) {
+SkillsController.updateFavoriteSkills = controllerHelperService.controller(async function (req, res, sessionUser) {
     const { mqClientService, responseUtil } = diContainer;
     const { skillId, isFavorite } = req.body;
 
-    console.log("sessionUser", sessionUser);
+    const resultAsJsonString = await mqClientService.callRPCQueue(
+        SKILLS_RPC_QUEUE,
+        JSON.stringify({ command: "UPDATE_FAVORITE_SKILLS", data: { skillId, isFavorite }, sessionUser })
+    );
+    responseUtil.sendJSON(res, resultAsJsonString);
+});
+
+SkillsController.fetchSkillSteps = controllerHelperService.controller(async function (req, res, sessionUser) {
+    const { mqClientService, responseUtil } = diContainer;
+    const { skillId } = req.params;
 
     const resultAsJsonString = await mqClientService.callRPCQueue(
         SKILLS_RPC_QUEUE,
-        JSON.stringify({ command: "ADD_OR_REMOVE_SKILL_TO_FAVORITES", data: { skillId, isFavorite }, sessionUser })
+        JSON.stringify({ command: "FETCH_SKILL_STEPS", data: { skillId }, sessionUser })
+    );
+    responseUtil.sendJSON(res, resultAsJsonString);
+});
+
+SkillsController.fetchSkillStepResources = controllerHelperService.controller(async function (req, res, sessionUser) {
+    const { mqClientService, responseUtil } = diContainer;
+    const { skillId, skillStepId } = req.params;
+
+    const resultAsJsonString = await mqClientService.callRPCQueue(
+        SKILLS_RPC_QUEUE,
+        JSON.stringify({ command: "FETCH_SKILL_STEP_RESOURCES", data: { skillId, skillStepId }, sessionUser })
+    );
+    responseUtil.sendJSON(res, resultAsJsonString);
+});
+
+SkillsController.fetchUserSkillProgress = controllerHelperService.controller(async function (req, res, sessionUser) {
+    const { mqClientService, responseUtil } = diContainer;
+    const { skillId, skillStepId } = req.params;
+
+    const resultAsJsonString = await mqClientService.callRPCQueue(
+        SKILLS_RPC_QUEUE,
+        JSON.stringify({ command: "FETCH_USER_SKILL_PROGRESS", data: { skillId, skillStepId }, sessionUser })
+    );
+    responseUtil.sendJSON(res, resultAsJsonString);
+});
+
+SkillsController.updateUserSkillProgress = controllerHelperService.controller(async function (req, res, sessionUser) {
+    const { mqClientService, responseUtil } = diContainer;
+    const { skillId } = req.params;
+    const { skillStepId, newFlag } = req.body;
+
+    const resultAsJsonString = await mqClientService.callRPCQueue(
+        SKILLS_RPC_QUEUE,
+        JSON.stringify({ command: "UPDATE_USER_SKILL_STEP_PROGRESS", data: { skillId, skillStepId, newFlag }, sessionUser })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 });

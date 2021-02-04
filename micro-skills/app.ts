@@ -49,11 +49,11 @@ const skillsMicro_fetchFavoriteSkills = async function (requestData, response: G
         let allUserFavoriteSkills;
 
         if (favoriteSkillsRowOfUser.favorites) {
-            const favoritesList = favoriteSkillsRowOfUser.favorites["items"];
+            const favoritesList = Array.isArray(favoriteSkillsRowOfUser.favorites) ? favoriteSkillsRowOfUser.favorites : [];
 
             allUserFavoriteSkills = await SkillModel.findAll({
                 where: {
-                    id: Object.keys(favoritesList)
+                    id: favoritesList
                 },
                 raw: true
             });
@@ -147,7 +147,7 @@ const skillsMicro_fetchSkillStepsResources = async function (requestData, respon
     }
 }
 
-const skillsMicro_addOrRemoveSkillToFavorites = async function (requestData, response: GenericApiResponse, sessionUser) {
+const skillsMicro_updateFavoriteSkills = async function (requestData, response: GenericApiResponse, sessionUser) {
     const { sequelize } = diContext.container;
     try {
         const UserFavoriteSkillModel = UserFavoriteSkillModelIniter(sequelize, Sequelize);
@@ -165,8 +165,6 @@ const skillsMicro_addOrRemoveSkillToFavorites = async function (requestData, res
         let arrayToUpdate: Array<number>;
 
         if (userFavoriteSkillRow.favorites) {
-            console.log(userFavoriteSkillRow.favorites);
-            console.log(Array.isArray(userFavoriteSkillRow.favorites));
             if (!Array.isArray(userFavoriteSkillRow.favorites)) {
                 // TODO(tayfun): log here...
                 userFavoriteSkillRow.favorites = [];
@@ -196,28 +194,31 @@ const skillsMicro_addOrRemoveSkillToFavorites = async function (requestData, res
     }
 }
 
-const skillsMicro_toggleUserSkillStepProgress = async function (requestData, response: GenericApiResponse, sessionUser) {
+const skillsMicro_updateUserSkillStepProgress = async function (requestData, response: GenericApiResponse, sessionUser) {
     const { sequelize } = diContext.container;
     try {
         const UserSkillStepProgressModel = UserSkillStepProgressModelIniter(sequelize, Sequelize);
 
         const { skillId, skillStepId, newFlag } = requestData;
         const userId = sessionUser.id;
+        const nSkillId = Number(skillId);
+        const nSkillStepId = Number(skillStepId);
 
-        const userSkillProgress = await UserSkillStepProgressModel.findOne({
+        const [userSkillProgress, isCreated] = await UserSkillStepProgressModel.findOrCreate({
             where: {
-                skillId,
-                userId
+                userId,
+                skillId: nSkillId
             }
         });
 
         const { progress } = userSkillProgress;
+        const progressToUpdate = progress || JSON.parse(JSON.stringify({}));
 
         userSkillProgress.progress = {
-            ...progress,
-            [`skill_${skillId}`]: {
-                ...(progress[`skill_${skillId}`]),
-                [skillStepId]: newFlag
+            ...progressToUpdate,
+            [`skill_${nSkillId}`]: {
+                ...(progressToUpdate[`skill_${nSkillId}`]),
+                [nSkillStepId]: newFlag
             }
         };
 
@@ -267,8 +268,6 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
             const { command, data, sessionUser } = authCommandData;
             const response = new GenericApiResponse();
             //------
-            console.log("authCommandData", authCommandData);
-            console.log("sessionUser", sessionUser);
             if (command === "FETCH_ALL_SKILLS") {
                 responseDataHolder.data = await skillsMicro_fetchAllSkills(data, response);
             } else if (command === "FETCH_ALL_FAVORITE_SKILLS") {
@@ -281,21 +280,19 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
                 responseDataHolder.data = await skillsMicro_fetchSkillSteps(data, response, sessionUser);
             } else if (command === "FETCH_SKILL_STEP_RESOURCES") {
                 responseDataHolder.data = await skillsMicro_fetchSkillStepsResources(data, response, sessionUser);
-            } else if (command === "ADD_OR_REMOVE_SKILL_TO_FAVORITES") {
-                responseDataHolder.data = await skillsMicro_addOrRemoveSkillToFavorites(data, response, sessionUser);
-            } else if (command === "TOGGLE_USER_SKILL_STEP_PROGRESS") {
-                responseDataHolder.data = await skillsMicro_toggleUserSkillStepProgress(data, response, sessionUser);
+            } else if (command === "UPDATE_FAVORITE_SKILLS") {
+                responseDataHolder.data = await skillsMicro_updateFavoriteSkills(data, response, sessionUser);
+            } else if (command === "UPDATE_USER_SKILL_STEP_PROGRESS") {
+                responseDataHolder.data = await skillsMicro_updateUserSkillStepProgress(data, response, sessionUser);
             } else {
                 responseDataHolder.data = response.failJSONString();
             }
             //------
-            if (responseDataHolder.data !== null) {
-                channel.sendToQueue(msg.properties.replyTo, Buffer.from(responseDataHolder.data), {
-                    correlationId: msg.properties.correlationId
-                });
+            channel.sendToQueue(msg.properties.replyTo, Buffer.from(responseDataHolder.data), {
+                correlationId: msg.properties.correlationId
+            });
 
-                channel.ack(msg);
-            }
+            channel.ack(msg);
         });
     });
 });

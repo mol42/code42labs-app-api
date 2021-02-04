@@ -152,8 +152,6 @@ const skillsMicro_addOrRemoveSkillToFavorites = async function (requestData, res
     try {
         const UserFavoriteSkillModel = UserFavoriteSkillModelIniter(sequelize, Sequelize);
 
-        console.log("sessionUser", sessionUser);
-
         const { skillId, isFavorite } = requestData;
         const userId = sessionUser.id;
 
@@ -163,15 +161,32 @@ const skillsMicro_addOrRemoveSkillToFavorites = async function (requestData, res
             }
         });
 
-        if (userFavoriteSkillRow.favorites && userFavoriteSkillRow.favorites["items"]) {
-            userFavoriteSkillRow.favorites["items"][skillId] = isFavorite;
-        } else {
-            if(!userFavoriteSkillRow.favorites) {
-                userFavoriteSkillRow.favorites = JSON.parse(JSON.stringify({items : {}}));
+        const nSkillId = Number(skillId);
+        let arrayToUpdate: Array<number>;
+
+        if (userFavoriteSkillRow.favorites) {
+            console.log(userFavoriteSkillRow.favorites);
+            console.log(Array.isArray(userFavoriteSkillRow.favorites));
+            if (!Array.isArray(userFavoriteSkillRow.favorites)) {
+                // TODO(tayfun): log here...
+                userFavoriteSkillRow.favorites = [];
             }
-            userFavoriteSkillRow.favorites["items"][skillId] = true;
+            arrayToUpdate = [...userFavoriteSkillRow.favorites];
+            if (isFavorite) {
+                if (arrayToUpdate.indexOf(nSkillId) === -1) {
+                    arrayToUpdate.push(nSkillId);
+                }
+            } else {
+                arrayToUpdate = arrayToUpdate.filter(pSkillId => pSkillId !== nSkillId);
+            }
+        } else {
+            if (!Array.isArray(userFavoriteSkillRow.favorites)) {
+                arrayToUpdate = [];
+            }
+            arrayToUpdate.push(skillId);
         }
 
+        userFavoriteSkillRow.favorites = arrayToUpdate;
         userFavoriteSkillRow.save();
 
         return response.okJSONString(null);

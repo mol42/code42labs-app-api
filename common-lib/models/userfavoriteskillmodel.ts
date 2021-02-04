@@ -5,13 +5,13 @@ import {
 } from 'sequelize';
 
 interface FavoritesJSON extends JSON {
-  items: any
+  items: Array<number>
 }
 
 interface UserFavoriteSkillAttributes {
   id: number,
   userId: number,
-  favorites: FavoritesJSON,
+  favorites: Array<number>,
   createdAt: Date,
   updatedAt: Date
 }
@@ -23,7 +23,7 @@ export class IUserFavoriteSkillModel extends Model<UserFavoriteSkillAttributes, 
   implements UserFavoriteSkillAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public userId!: number;
-  public favorites!: FavoritesJSON;
+  public favorites!: Array<number>;
   public createdAt!: Date;
   public updatedAt!: Date;
 }

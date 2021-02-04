@@ -53,7 +53,7 @@ const skillsMicro_fetchFavoriteSkills = async function (requestData, response: G
 
             allUserFavoriteSkills = await SkillModel.findAll({
                 where: {
-                    id: favoritesList
+                    id: Object.keys(favoritesList)
                 },
                 raw: true
             });
@@ -152,25 +152,31 @@ const skillsMicro_addOrRemoveSkillToFavorites = async function (requestData, res
     try {
         const UserFavoriteSkillModel = UserFavoriteSkillModelIniter(sequelize, Sequelize);
 
+        console.log("sessionUser", sessionUser);
+
         const { skillId, isFavorite } = requestData;
         const userId = sessionUser.id;
 
         let [userFavoriteSkillRow, isCreated] = await UserFavoriteSkillModel.findOrCreate({
             where: {
                 userId
-            },
-            raw: true
+            }
         });
 
         if (userFavoriteSkillRow.favorites && userFavoriteSkillRow.favorites["items"]) {
             userFavoriteSkillRow.favorites["items"][skillId] = isFavorite;
         } else {
-            userFavoriteSkillRow.favorites["items"] = {};
+            if(!userFavoriteSkillRow.favorites) {
+                userFavoriteSkillRow.favorites = JSON.parse(JSON.stringify({items : {}}));
+            }
             userFavoriteSkillRow.favorites["items"][skillId] = true;
         }
 
+        userFavoriteSkillRow.save();
+
         return response.okJSONString(null);
     } catch (err) {
+        console.log(err);
         return response.failJSONString();
     }
 }
@@ -246,9 +252,11 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
             const { command, data, sessionUser } = authCommandData;
             const response = new GenericApiResponse();
             //------
+            console.log("authCommandData", authCommandData);
+            console.log("sessionUser", sessionUser);
             if (command === "FETCH_ALL_SKILLS") {
                 responseDataHolder.data = await skillsMicro_fetchAllSkills(data, response);
-            } else if (command === "FETCH_FAVORITE_SKILLS") {
+            } else if (command === "FETCH_ALL_FAVORITE_SKILLS") {
                 responseDataHolder.data = await skillsMicro_fetchFavoriteSkills(data, response, sessionUser);
             } else if (command === "FETCH_USER_SKILL_PROGRESS") {
                 responseDataHolder.data = await skillsMicro_fetchUserSkillProgress(data, response, sessionUser);

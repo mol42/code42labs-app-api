@@ -7,4 +7,12 @@ router.get('/all', function (req, res, next) {
     SkillsController.fetchAllSkills(req, res);
 });
 
+router.get('/favorites/all', function (req, res, next) {
+    SkillsController.fetchAllFavoriteSkills(req, res);
+});
+
+router.post('/favorites/add-or-remove', function (req, res, next) {
+    SkillsController.addOrRemoveSkillToFavorites(req, res);
+});
+
 module.exports = router;

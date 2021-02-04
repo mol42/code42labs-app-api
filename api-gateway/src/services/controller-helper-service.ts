@@ -6,12 +6,11 @@ class ControllerHelperService {
     controller(controller) {
 
         return function (req, res) {
-            const genericApiResponse = new GenericApiResponse();
             const jwtToken = req.headers["x-auth-token"];
             let sessionUser;
 
             if (!jwtToken || jwtToken == "null" || typeof jwtToken === "undefined") {
-                res.json(genericApiResponse.failJSON("ERR_19999"));
+                res.json(new GenericApiResponse().failJSON("ERR_19999"));
                 return;
             }
 
@@ -20,17 +19,17 @@ class ControllerHelperService {
             } catch (e) {
 
                 if (e instanceof jwt.JsonWebTokenError) {
-                    res.json(genericApiResponse.failJSON("ERR_19999"));
+                    res.json(new GenericApiResponse().failJSON("ERR_19999"));
                     return;
                 }
 
-                res.json(genericApiResponse.failJSON("ERR_19999"));
+                res.json(new GenericApiResponse().failJSON("ERR_19999"));
                 return;
             }
 
             console.log("sessionUser", sessionUser);
 
-            controller(req, res, sessionUser, genericApiResponse);
+            controller(req, res, sessionUser);
         };
     }
 }

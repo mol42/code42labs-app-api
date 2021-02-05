@@ -181,7 +181,7 @@ const skillsMicro_updateFavoriteSkills = async function (requestData, response: 
             if (!Array.isArray(userFavoriteSkillRow.favorites)) {
                 arrayToUpdate = [];
             }
-            arrayToUpdate.push(skillId);
+            arrayToUpdate.push(nSkillId);
         }
 
         userFavoriteSkillRow.favorites = arrayToUpdate;

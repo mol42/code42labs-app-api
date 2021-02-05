@@ -18,7 +18,8 @@ interface SkillStepAttributes {
 // Some attributes are optional in `User.build` and `User.create` calls
 interface SkillStepCreationAttributes extends Optional<SkillStepAttributes, "id"> { }
 
-// Her skill icin tamamlanmasi gereken adimlar vardir ve bu adimlari
+// Her skill icin tamamlanmasi gereken adimlar vardir ve bu adimlari temsil
+// etmek icin bu modeli kullaniyoruz
 export class ISkillStepModel extends Model<SkillStepAttributes, SkillStepCreationAttributes>
   implements SkillStepAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.

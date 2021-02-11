@@ -4,6 +4,7 @@ module.exports = {
     await queryInterface.createTable('skills', {
       id: { type: Sequelize.BIGINT, primaryKey: true, autoIncrement: true },
       name: { type: Sequelize.STRING, field: "name" },
+      image: { type: Sequelize.STRING, field: "image" },
       shortDescription: { type: Sequelize.STRING, field: "short_description" },
       longDescription: { type: Sequelize.STRING, field: "long_description" },
       skillTypeId: { type: Sequelize.INTEGER, field: "skill_type_id" },

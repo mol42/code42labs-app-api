@@ -7,6 +7,7 @@ import {
 interface SkillAttributes {
   id: number,
   name: string,
+  image: string,
   shortDescription: string,
   longDescription: string,
   skillTypeId: number;
@@ -23,6 +24,7 @@ export class ISkillModel extends Model<SkillAttributes, SkillCreationAttributes>
   implements SkillAttributes {
   public id!: number; // Note that the `null assertion` `!` is required in strict mode.
   public name!: string;
+  public image!: string;
   public shortDescription: string;
   public longDescription: string;
   public skillTypeId: number;
@@ -34,6 +36,7 @@ export default (sequelize, DataTypes) => {
   ISkillModel.init({
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
     name: { type: DataTypes.STRING, field: "name" },
+    image: { type: DataTypes.STRING, field: "image" },
     shortDescription: { type: DataTypes.STRING, field: "short_description" },
     longDescription: { type: DataTypes.STRING, field: "long_description" },
     skillTypeId: { type: DataTypes.INTEGER, field: "skill_type_id" },

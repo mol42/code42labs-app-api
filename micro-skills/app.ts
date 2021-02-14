@@ -128,14 +128,18 @@ const skillsMicro_fetchSkillStepsResources = async function (requestData, respon
     try {
         const SkilStepResourceModel = SkilStepResourceModelIniter(sequelize, Sequelize);
 
-        const { skillId } = requestData;
+        const { skillId, skillStepId } = requestData;
         const { languageOptions } = sessionUser;
+        // TODO(Tayfun): change this to sessionUser configuration
+        const prefferedLanguages = [1];
 
         const skillStepResources = await SkilStepResourceModel.findAll({
             where: {
                 skillId,
+                skillStepId,
                 languageId: {
-                    [Op.in]: languageOptions.prefferedLanguages
+                    // [Op.in]: languageOptions.prefferedLanguages
+                    [Op.in] : prefferedLanguages
                 }
             },
             raw: true
@@ -143,6 +147,7 @@ const skillsMicro_fetchSkillStepsResources = async function (requestData, respon
 
         return response.okJSONString(skillStepResources);
     } catch (err) {
+        console.log(err);
         return response.failJSONString();
     }
 }
@@ -151,9 +156,15 @@ const skillsMicro_updateFavoriteSkills = async function (requestData, response: 
     const { sequelize } = diContext.container;
     try {
         const UserFavoriteSkillModel = UserFavoriteSkillModelIniter(sequelize, Sequelize);
+        
+        console.log("skillsMicro_updateFavoriteSkills requestData", requestData);
 
         const { skillId, isFavorite } = requestData;
         const userId = sessionUser.id;
+
+        if (isNaN(skillId)) {
+            return response.failJSONString();
+        }
 
         let [userFavoriteSkillRow, isCreated] = await UserFavoriteSkillModel.findOrCreate({
             where: {

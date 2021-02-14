@@ -11,7 +11,7 @@ router.get('/favorites/all', function (req, res, next) {
     SkillsController.fetchAllFavoriteSkills(req, res);
 });
 
-router.post('/favorites/update', function (req, res, next) {
+router.post('/:skillId/favorites/update', function (req, res, next) {
     SkillsController.updateFavoriteSkills(req, res);
 });
 

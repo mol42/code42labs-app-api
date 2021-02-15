@@ -1,5 +1,4 @@
 import { diContext } from "../di";
-import { v4 as uuidv4 } from "uuid";
 const AUTH_RPC_QUEUE = "C42_AUTH_RPC_QUEUE";
 
 const AuthorizationController = {
@@ -8,9 +7,11 @@ const AuthorizationController = {
     login: null,
     logout: null,
     resetPassword: null,
-    updatePassword: null
+    updatePassword: null,
+    updateTheme: null
 };
 const diContainer = diContext.container;
+const controllerHelperService = diContainer.controllerHelperService;
 
 AuthorizationController.signUp = async function (req, res) {
     // Dependency Injection servisinden okuma yaparken eger talep ettigimiz
@@ -26,7 +27,7 @@ AuthorizationController.signUp = async function (req, res) {
         // buradaki data yapisi tamamen bize ozel yani MQ sadece string bekliyor data olarak biz ise
         // bir JSON datasini string hale donusturup o sekilde gonderiyoruz boylece karsi taraf aldigi
         // zaman parse eder ve gonderdigimiz JS objesini okuyup islemini yapar.
-        JSON.stringify({ command: "AUTH_SIGNUP", data: { firstName, lastName, email, password, referralCode }, commandId: uuidv4() })
+        JSON.stringify({ command: "AUTH_SIGNUP", data: { firstName, lastName, email, password, referralCode } })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 };
@@ -36,7 +37,7 @@ AuthorizationController.activate = async function (req, res) {
     const { requestId } = req.params;
     const resultAsString = await mqClientService.callRPCQueue(
         AUTH_RPC_QUEUE,
-        JSON.stringify({ command: "AUTH_ACTIVATE", data: { requestId }, commandId: uuidv4() })
+        JSON.stringify({ command: "AUTH_ACTIVATE", data: { requestId } })
     );
     responseUtil.sendHTMLString(res, resultAsString);
 };
@@ -48,8 +49,7 @@ AuthorizationController.login = async function (req, res) {
         AUTH_RPC_QUEUE,
         JSON.stringify({
             command: "AUTH_LOGIN",
-            data: { email, password, appVersion },
-            commandId: uuidv4()
+            data: { email, password, appVersion }
         })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
@@ -62,7 +62,7 @@ AuthorizationController.resetPassword = async function (req, res) {
     const { email } = req.body;
     const resultAsJsonString = await mqClientService.callRPCQueue(
         AUTH_RPC_QUEUE,
-        JSON.stringify({ command: "AUTH_RESET_PASSWORD", data: { email }, commandId: uuidv4() })
+        JSON.stringify({ command: "AUTH_RESET_PASSWORD", data: { email } })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 };
@@ -72,9 +72,19 @@ AuthorizationController.updatePassword = async function (req, res) {
     const { email, code, password } = req.body;
     const resultAsJsonString = await mqClientService.callRPCQueue(
         AUTH_RPC_QUEUE,
-        JSON.stringify({ command: "AUTH_UPDATE_PASSWORD", data: { email, code, password }, commandId: uuidv4() })
+        JSON.stringify({ command: "AUTH_UPDATE_PASSWORD", data: { email, code, password } })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 };
+
+AuthorizationController.updateTheme = controllerHelperService.controller(async function (req, res, sessionUser) {
+    const { mqClientService, responseUtil } = diContainer;
+    const { theme } = req.body;
+    const resultAsJsonString = await mqClientService.callRPCQueue(
+        AUTH_RPC_QUEUE,
+        JSON.stringify({ command: "PROFILE_UPDATE_THEME", data: { theme }, sessionUser })
+    );
+    responseUtil.sendJSON(res, resultAsJsonString);
+});
 
 export default AuthorizationController;

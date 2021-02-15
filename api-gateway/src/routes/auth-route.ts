@@ -27,4 +27,9 @@ router.post('/update/password', function (req, res, next) {
     AuthorizationController.updatePassword(req, res);
 });
 
+///
+router.post('/update/theme', function (req, res, next) {
+    AuthorizationController.updateTheme(req, res);
+});
+
 module.exports = router;

@@ -104,6 +104,7 @@ const authMicoservice_login = async function (requestData, response) {
                 email,
                 phone,
                 avatarId,
+                selectedTheme,
                 lastAnnouncement,
                 welcomed
             } = dbUser;
@@ -117,6 +118,7 @@ const authMicoservice_login = async function (requestData, response) {
                 email,
                 phone,
                 avatarId,
+                selectedTheme,
                 welcomed: false,
                 showAnnouncement: false,
                 announcementVersion
@@ -130,6 +132,7 @@ const authMicoservice_login = async function (requestData, response) {
                 email,
                 // phone,
                 avatarId,
+                selectedTheme,
                 showAnnouncement: false,
                 announcementVersion
             };
@@ -316,6 +319,39 @@ const authMicroservice_updatePassword = async function (requestData, response) {
     }
 };
 
+const ID_NORMAL_THEME = 0;
+const ID_DARK_THEME = 0;
+
+const authMicroservice_profile_updateTheme = async function (requestData, sessionUser, response) {
+    const { sequelize, cacheService } = diContext.bottle.container;
+    const UserModel = UserModelIniter(sequelize, Sequelize);
+
+    console.log("authMicroservice_profile_updateTheme");
+    console.log(requestData);
+
+    const { theme } = requestData;
+    if (!sessionUser || !theme) {
+        return response.failJSONString(UNKOWN_ERROR);
+    }
+    const userId = sessionUser.id;
+
+    try {
+        let foundUser = await UserModel.findAll({ where: { id : userId } });
+
+        if (foundUser) {
+            const themeId = theme === "normal" ? ID_NORMAL_THEME : ID_DARK_THEME;
+            foundUser[0].selectedTheme = themeId;
+            foundUser[0].save();
+            return response.okJSONString(foundUser);
+        } else {
+            return response.failJSONString(UNKOWN_ERROR);
+        }
+    } catch (err) {
+        return response.failJSONString(UNKOWN_ERROR);
+    }
+};
+
+
 /*
  **********************************************************************
  */
@@ -364,6 +400,8 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
                 responseDataHolder.data = await authMicroservice_resetPassword(data, sessionUser, response);
             } else if (command === "AUTH_UPDATE_PASSWORD") {
                 responseDataHolder.data = await authMicroservice_updatePassword(data, response);
+            } else if (command === "PROFILE_UPDATE_THEME") {
+                responseDataHolder.data = await authMicroservice_profile_updateTheme(data, sessionUser, response);
             } else {
                 responseDataHolder.data = response.failJSONString();
             }

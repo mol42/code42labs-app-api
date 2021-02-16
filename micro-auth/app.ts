@@ -320,14 +320,11 @@ const authMicroservice_updatePassword = async function (requestData, response) {
 };
 
 const ID_NORMAL_THEME = 0;
-const ID_DARK_THEME = 0;
+const ID_DARK_THEME = 1;
 
 const authMicroservice_profile_updateTheme = async function (requestData, sessionUser, response) {
     const { sequelize, cacheService } = diContext.bottle.container;
     const UserModel = UserModelIniter(sequelize, Sequelize);
-
-    console.log("authMicroservice_profile_updateTheme");
-    console.log(requestData);
 
     const { theme } = requestData;
     if (!sessionUser || !theme) {
@@ -342,11 +339,13 @@ const authMicroservice_profile_updateTheme = async function (requestData, sessio
             const themeId = theme === "normal" ? ID_NORMAL_THEME : ID_DARK_THEME;
             foundUser[0].selectedTheme = themeId;
             foundUser[0].save();
+            console.log(foundUser[0].toJSON());
             return response.okJSONString(foundUser);
         } else {
             return response.failJSONString(UNKOWN_ERROR);
         }
     } catch (err) {
+        console.log(err);
         return response.failJSONString(UNKOWN_ERROR);
     }
 };

@@ -20,7 +20,8 @@ module.exports = {
       welcomed: { type: Sequelize.BOOLEAN, field: "welcomed" },
       lastAnnouncement: { type: Sequelize.STRING, field: "last_announcement" },
       languageOptions: { type: Sequelize.JSON, field: "language_options" },
-      selectedTheme: { type: Sequelize.INTEGER, field: "selected_theme" },
+      language: { type: Sequelize.INTEGER, field: "language" },
+      theme: { type: Sequelize.INTEGER, field: "theme" },
       salt: Sequelize.STRING,
       status: Sequelize.TINYINT,
       createdAt: {

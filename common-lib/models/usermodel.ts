@@ -18,7 +18,8 @@ interface UserAttributes {
   welcomed: boolean,
   lastAnnouncement: string,
   languageOptions: JSON,
-  selectedTheme: number,
+  theme: number,
+  language: number,
   salt: string,
   status: number,
   createdAt: Date,
@@ -42,9 +43,13 @@ export class IUserModel extends Model<UserAttributes, UserCreationAttributes>
   public birthdate: Date;
   public welcomed!: boolean;
   public lastAnnouncement!: string;
+  // selected languages for resources
+  // also ordering of the language
   public languageOptions: JSON;
   // dark or white theme
-  public selectedTheme: number;
+  public theme: number;
+  // english (0) or turkish (1)
+  public language: number;
   public salt!: string;
   public status!: number;
   public createdAt!: Date;
@@ -66,7 +71,8 @@ export default (sequelize, DataTypes) => {
     welcomed: { type: DataTypes.BOOLEAN, field: "welcomed" },
     lastAnnouncement: { type: DataTypes.STRING, field: "last_announcement" },
     languageOptions: { type: DataTypes.JSON, field: "language_options" },
-    selectedTheme: { type: DataTypes.INTEGER, field: "selected_theme" },
+    theme: { type: DataTypes.INTEGER, field: "theme" },
+    language: { type: DataTypes.INTEGER, field: "language" },
     salt: DataTypes.STRING,
     status: DataTypes.TINYINT,
     createdAt: {

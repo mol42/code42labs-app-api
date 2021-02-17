@@ -35,6 +35,12 @@ const {
     SIGNUP_INVALID_EMAIL
 } = ERR_CONS;
 
+const ID_NORMAL_THEME = 0;
+const ID_DARK_THEME = 1;
+
+const LANG_EN = 0;
+const LANG_TR = 1;
+
 const sendActivationEmail = function (requestId, { firstName, email }) {
     const { emailService } = diContext.bottle.container;
     const activationEmail = TmplActivationEmail({
@@ -104,7 +110,8 @@ const authMicoservice_login = async function (requestData, response) {
                 email,
                 phone,
                 avatarId,
-                selectedTheme,
+                theme,
+                language,
                 lastAnnouncement,
                 welcomed
             } = dbUser;
@@ -118,7 +125,8 @@ const authMicoservice_login = async function (requestData, response) {
                 email,
                 phone,
                 avatarId,
-                selectedTheme,
+                theme,
+                language,
                 welcomed: false,
                 showAnnouncement: false,
                 announcementVersion
@@ -132,7 +140,8 @@ const authMicoservice_login = async function (requestData, response) {
                 email,
                 // phone,
                 avatarId,
-                selectedTheme,
+                theme,
+                language,
                 showAnnouncement: false,
                 announcementVersion
             };
@@ -319,15 +328,15 @@ const authMicroservice_updatePassword = async function (requestData, response) {
     }
 };
 
-const ID_NORMAL_THEME = 0;
-const ID_DARK_THEME = 1;
-
 const authMicroservice_profile_updateTheme = async function (requestData, sessionUser, response) {
     const { sequelize, cacheService } = diContext.bottle.container;
     const UserModel = UserModelIniter(sequelize, Sequelize);
 
     const { theme } = requestData;
-    if (!sessionUser || !theme) {
+    console.log("authMicroservice_profile_updateTheme");
+    console.log(requestData);
+    
+    if (!sessionUser || isNaN(theme)) {
         return response.failJSONString(UNKOWN_ERROR);
     }
     const userId = sessionUser.id;
@@ -336,8 +345,37 @@ const authMicroservice_profile_updateTheme = async function (requestData, sessio
         let foundUser = await UserModel.findAll({ where: { id : userId } });
 
         if (foundUser) {
-            const themeId = theme === "normal" ? ID_NORMAL_THEME : ID_DARK_THEME;
-            foundUser[0].selectedTheme = themeId;
+            const themeId = Number(theme) === 0 ? ID_NORMAL_THEME : ID_DARK_THEME;
+            console.log("authMicroservice_profile_updateTheme themeId", themeId);
+            foundUser[0].theme = themeId;
+            foundUser[0].save();
+            console.log(foundUser[0].toJSON());
+            return response.okJSONString(foundUser[0].toJSON());
+        } else {
+            return response.failJSONString(UNKOWN_ERROR);
+        }
+    } catch (err) {
+        console.log(err);
+        return response.failJSONString(UNKOWN_ERROR);
+    }
+};
+
+const authMicroservice_profile_updateLanguage = async function (requestData, sessionUser, response) {
+    const { sequelize, cacheService } = diContext.bottle.container;
+    const UserModel = UserModelIniter(sequelize, Sequelize);
+
+    const { language } = requestData;
+    if (!sessionUser || isNaN(language)) {
+        return response.failJSONString(UNKOWN_ERROR);
+    }
+    const userId = sessionUser.id;
+
+    try {
+        let foundUser = await UserModel.findAll({ where: { id : userId } });
+
+        if (foundUser) {
+            const languageId = Number(language) === 0 ? LANG_EN : LANG_TR;
+            foundUser[0].theme = languageId;
             foundUser[0].save();
             console.log(foundUser[0].toJSON());
             return response.okJSONString(foundUser);
@@ -349,7 +387,6 @@ const authMicroservice_profile_updateTheme = async function (requestData, sessio
         return response.failJSONString(UNKOWN_ERROR);
     }
 };
-
 
 /*
  **********************************************************************
@@ -401,6 +438,8 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
                 responseDataHolder.data = await authMicroservice_updatePassword(data, response);
             } else if (command === "PROFILE_UPDATE_THEME") {
                 responseDataHolder.data = await authMicroservice_profile_updateTheme(data, sessionUser, response);
+            }else if (command === "PROFILE_UPDATE_LANGUAGE") {
+                responseDataHolder.data = await authMicroservice_profile_updateLanguage(data, sessionUser, response);
             } else {
                 responseDataHolder.data = response.failJSONString();
             }

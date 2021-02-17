@@ -32,4 +32,8 @@ router.post('/update/theme', function (req, res, next) {
     AuthorizationController.updateTheme(req, res);
 });
 
+router.post('/update/language', function (req, res, next) {
+    AuthorizationController.updateLanguage(req, res);
+});
+
 module.exports = router;

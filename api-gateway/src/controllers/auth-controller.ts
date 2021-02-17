@@ -8,7 +8,8 @@ const AuthorizationController = {
     logout: null,
     resetPassword: null,
     updatePassword: null,
-    updateTheme: null
+    updateTheme: null,
+    updateLanguage: null
 };
 const diContainer = diContext.container;
 const controllerHelperService = diContainer.controllerHelperService;
@@ -86,5 +87,16 @@ AuthorizationController.updateTheme = controllerHelperService.controller(async f
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 });
+
+AuthorizationController.updateLanguage = controllerHelperService.controller(async function (req, res, sessionUser) {
+    const { mqClientService, responseUtil } = diContainer;
+    const { language } = req.body;
+    const resultAsJsonString = await mqClientService.callRPCQueue(
+        AUTH_RPC_QUEUE,
+        JSON.stringify({ command: "PROFILE_UPDATE_LANGUAGE", data: { language }, sessionUser })
+    );
+    responseUtil.sendJSON(res, resultAsJsonString);
+});
+
 
 export default AuthorizationController;

@@ -349,7 +349,6 @@ const authMicroservice_profile_updateTheme = async function (requestData, sessio
             console.log("authMicroservice_profile_updateTheme themeId", themeId);
             foundUser[0].theme = themeId;
             foundUser[0].save();
-            console.log(foundUser[0].toJSON());
             return response.okJSONString(foundUser[0].toJSON());
         } else {
             return response.failJSONString(UNKOWN_ERROR);
@@ -375,10 +374,9 @@ const authMicroservice_profile_updateLanguage = async function (requestData, ses
 
         if (foundUser) {
             const languageId = Number(language) === 0 ? LANG_EN : LANG_TR;
-            foundUser[0].theme = languageId;
+            foundUser[0].language = languageId;
             foundUser[0].save();
-            console.log(foundUser[0].toJSON());
-            return response.okJSONString(foundUser);
+            return response.okJSONString(foundUser[0].toJSON());
         } else {
             return response.failJSONString(UNKOWN_ERROR);
         }

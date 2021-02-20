@@ -15,6 +15,7 @@ diContext.container.mqClientService.init();
 //
 const authRoute = require("./routes/auth-route");
 const skillsRoute = require("./routes/skills-route");
+const skillNewsRoute = require("./routes/skill-news-route");
 const app = express();
 
 // CORS support
@@ -41,6 +42,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", authRoute);
 app.use("/skills", skillsRoute);
+app.use("/skill-news", skillNewsRoute);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

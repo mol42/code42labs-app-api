@@ -1,0 +1,18 @@
+const path = require('path');
+
+let seedersPath = path.resolve("seeders");
+
+if (process.env.ENVIRONMENT === "PRODUCTION") {
+  seedersPath = path.resolve("seeders", "production");
+} else if (process.env.ENVIRONMENT === "DEVELOPMENT") {
+  seedersPath = path.resolve("seeders", "development");
+}
+
+console.log(seedersPath);
+
+module.exports = {
+  'config': path.resolve('config', 'config.json'),
+  'models-path': path.resolve('models'),
+  'seeders-path': seedersPath,
+  'migrations-path': path.resolve('migrations')
+}

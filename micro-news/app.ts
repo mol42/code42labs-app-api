@@ -11,7 +11,7 @@ import SkillNewsModelIniter from "../common-lib/models/skillnewsmodel";
 import UserFavoriteSkillModelIniter from "../common-lib/models/userfavoriteskillmodel";
 //-----
 
-const NEWS_RPC_QUEUE = "C42_NEWS_RPC_QUEUE";
+const SKILL_NEWS_RPC_QUEUE = "C42_SKILL_NEWS_RPC_QUEUE";
 const LANG_EN = 0;
 const LANG_TR = 1;
 
@@ -61,7 +61,7 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
             throw error1;
         }
         // dinlemek istedigimiz queue kanalinin adi
-        const queue = NEWS_RPC_QUEUE;
+        const queue = SKILL_NEWS_RPC_QUEUE;
 
         channel.assertQueue(queue, {
             durable: false

@@ -7,12 +7,41 @@ import GenericApiResponse from "../common-lib/models/generic-api-response";
 import amqp from "amqplib/callback_api";
 import { Op, Sequelize } from "sequelize";
 // import ERR_CONS from "../common-lib/config/error-constants";
-
+import SkillNewsModelIniter from "../common-lib/models/skillnewsmodel";
+import UserFavoriteSkillModelIniter from "../common-lib/models/userfavoriteskillmodel";
 //-----
 
 const NEWS_RPC_QUEUE = "C42_NEWS_RPC_QUEUE";
+const LANG_EN = 0;
+const LANG_TR = 1;
 
+const newsMicro_fetchAllFavoriteSkillNews = async function (requestData, sessionUser, response) {
+    const { sequelize } = diContext.bottle.container;
+    const SkillNewsModel = SkillNewsModelIniter(sequelize, Sequelize);
+    const UserFavoriteSkillModel = UserFavoriteSkillModelIniter(sequelize, Sequelize);
 
+    const {id: userId, languageOptions} = sessionUser;
+
+    try {
+        const favoriteSkillsRowOfUser = await UserFavoriteSkillModel.findOne({
+            where: {
+                userId
+            }, raw: true
+        });
+
+        const allFavoriteSkillNews = await SkillNewsModel.findOne({
+            where: {
+                skillId : favoriteSkillsRowOfUser.favorites,
+                // TODO(Tayfun)
+                languageId: [LANG_EN, LANG_TR]
+            }, raw: true
+        });
+
+        return response.okJSONString(allFavoriteSkillNews); 
+    } catch(err) {
+        return response.failJSONString();
+    }
+}
 
 /*
  **********************************************************************
@@ -52,8 +81,8 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
             const { command, data, sessionUser } = authCommandData;
             const response = new GenericApiResponse();
             //------
-            if (command === "FETCH_ALL_SKILLS") {
-                // responseDataHolder.data = await skillsMicro_fetchAllSkills(data, response);
+            if (command === "FETCH_ALL_FAVORITE_SKILL_NEWS") {
+                responseDataHolder.data = await newsMicro_fetchAllFavoriteSkillNews(data, sessionUser, response);
             } else {
                 responseDataHolder.data = response.failJSONString();
             }

@@ -13,6 +13,7 @@ interface SkillNewsAttributes {
   summary: string,
   content: string,
   languageId: number,
+  publishDate: Date,
   createdAt: Date,
   updatedAt: Date
 }
@@ -32,6 +33,7 @@ export class ISkillNewsModel extends Model<SkillNewsAttributes, SkillStepCreatio
   public summary: string;
   public content: string;
   public languageId: number;
+  public publishDate: Date;
   public createdAt!: Date;
   public updatedAt!: Date;
 }
@@ -46,6 +48,7 @@ export default (sequelize, DataTypes) => {
     summary: { type: DataTypes.INTEGER, field: "summary" },
     content: { type: DataTypes.INTEGER, field: "content" },
     languageId: { type: DataTypes.INTEGER, field: "language_id" },
+    publishDate: { type: DataTypes.DATE, field: "publish_date" },
     createdAt: {
       type: DataTypes.DATE,
       field: "created_at",

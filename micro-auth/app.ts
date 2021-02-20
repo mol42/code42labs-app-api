@@ -112,6 +112,7 @@ const authMicoservice_login = async function (requestData, response) {
                 avatarId,
                 theme,
                 language,
+                languageOptions,
                 lastAnnouncement,
                 welcomed
             } = dbUser;
@@ -128,6 +129,7 @@ const authMicoservice_login = async function (requestData, response) {
                 theme,
                 language,
                 welcomed: false,
+                languageOptions,
                 showAnnouncement: false,
                 announcementVersion
             };
@@ -142,6 +144,7 @@ const authMicoservice_login = async function (requestData, response) {
                 avatarId,
                 theme,
                 language,
+                languageOptions,
                 showAnnouncement: false,
                 announcementVersion
             };

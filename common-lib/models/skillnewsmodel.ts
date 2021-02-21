@@ -12,6 +12,7 @@ interface SkillNewsAttributes {
   largeImage: string,
   summary: string,
   content: string,
+  contentUrl: string,
   languageId: number,
   publishDate: Date,
   isPublished: boolean,
@@ -33,6 +34,7 @@ export class ISkillNewsModel extends Model<SkillNewsAttributes, SkillStepCreatio
   public largeImage: string;
   public summary: string;
   public content: string;
+  public contentUrl: string;
   public languageId: number;
   public publishDate: Date;
   public isPublished: boolean;
@@ -49,6 +51,7 @@ export default (sequelize, DataTypes) => {
     largeImage: { type: DataTypes.INTEGER, field: "large_image" },
     summary: { type: DataTypes.INTEGER, field: "summary" },
     content: { type: DataTypes.INTEGER, field: "content" },
+    contentUrl: { type: DataTypes.INTEGER, field: "content_url" },
     languageId: { type: DataTypes.INTEGER, field: "language_id" },
     publishDate: { type: DataTypes.DATE, field: "publish_date" },
     isPublished: { type: DataTypes.BOOLEAN, field: "is_published" },

@@ -29,7 +29,7 @@ const newsMicro_fetchAllFavoriteSkillNews = async function (requestData, session
             }, raw: true
         });
 
-        const allFavoriteSkillNews = await SkillNewsModel.findOne({
+        const allFavoriteSkillNews = await SkillNewsModel.findAll({
             where: {
                 skillId : favoriteSkillsRowOfUser.favorites,
                 // TODO(Tayfun)
@@ -39,6 +39,7 @@ const newsMicro_fetchAllFavoriteSkillNews = async function (requestData, session
 
         return response.okJSONString(allFavoriteSkillNews); 
     } catch(err) {
+        console.log(err);
         return response.failJSONString();
     }
 }

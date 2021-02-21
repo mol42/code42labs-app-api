@@ -1,12 +1,12 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('SkillNewsModels', {
+    await queryInterface.createTable('skill_news', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.BIGINT
       },
       skillId: { type: Sequelize.INTEGER, field: "skill_id" },
       title: { type: Sequelize.TEXT, field: "title" },
@@ -15,17 +15,21 @@ module.exports = {
       summary: { type: Sequelize.TEXT, field: "summary" },
       content: { type: Sequelize.TEXT, field: "content" },
       languageId: { type: Sequelize.INTEGER, field: "language_id" },
+      publishDate: { type: DataTypes.DATE, field: "publish_date" },
+      isPublished: { type: DataTypes.BOOLEAN, field: "is_published" },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        field: "created_at" 
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        field: "updated_at" 
       }
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('SkillNewsModels');
+    await queryInterface.dropTable('skill_news');
   }
 };

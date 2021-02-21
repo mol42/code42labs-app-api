@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc && cp .env dist/micro-skills/ && node dist/micro-skills/app.js",
+    "start": "tsc && cp .env dist/micro-skill-news/ && node dist/micro-skill-news/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

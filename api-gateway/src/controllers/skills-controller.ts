@@ -7,7 +7,7 @@ const SkillsController = {
     updateFavoriteSkills: null,
     fetchSkillSteps: null,
     fetchSkillStepResources: null,
-    fetchUserSkillProgress: null,
+    fetchUserSkillStepProgress: null,
     updateUserSkillProgress: null
 };
 const diContainer = diContext.container;
@@ -69,13 +69,13 @@ SkillsController.fetchSkillStepResources = controllerHelperService.controller(as
     responseUtil.sendJSON(res, resultAsJsonString);
 });
 
-SkillsController.fetchUserSkillProgress = controllerHelperService.controller(async function (req, res, sessionUser) {
+SkillsController.fetchUserSkillStepProgress = controllerHelperService.controller(async function (req, res, sessionUser) {
     const { mqClientService, responseUtil } = diContainer;
     const { skillId, skillStepId } = req.params;
 
     const resultAsJsonString = await mqClientService.callRPCQueue(
         SKILLS_RPC_QUEUE,
-        JSON.stringify({ command: "FETCH_USER_SKILL_PROGRESS", data: { skillId, skillStepId }, sessionUser })
+        JSON.stringify({ command: "FETCH_USER_SKILL_STEP_PROGRESS", data: { skillId, skillStepId }, sessionUser })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 });
@@ -83,11 +83,11 @@ SkillsController.fetchUserSkillProgress = controllerHelperService.controller(asy
 SkillsController.updateUserSkillProgress = controllerHelperService.controller(async function (req, res, sessionUser) {
     const { mqClientService, responseUtil } = diContainer;
     const { skillId } = req.params;
-    const { skillStepId, newFlag } = req.body;
+    const { skillStepId, isCompleted } = req.body;
 
     const resultAsJsonString = await mqClientService.callRPCQueue(
         SKILLS_RPC_QUEUE,
-        JSON.stringify({ command: "UPDATE_USER_SKILL_STEP_PROGRESS", data: { skillId, skillStepId, newFlag }, sessionUser })
+        JSON.stringify({ command: "UPDATE_USER_SKILL_STEP_PROGRESS", data: { skillId, skillStepId, isCompleted }, sessionUser })
     );
     responseUtil.sendJSON(res, resultAsJsonString);
 });

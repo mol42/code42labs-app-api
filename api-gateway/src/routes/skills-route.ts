@@ -24,7 +24,7 @@ router.get('/:skillId/steps/:skillStepId/resources/all', function (req, res, nex
 });
 
 router.get('/:skillId/progress/all', function (req, res, next) {
-    SkillsController.fetchUserSkillProgress(req, res);
+    SkillsController.fetchUserSkillStepProgress(req, res);
 });
 
 router.post('/:skillId/progress/update', function (req, res, next) {

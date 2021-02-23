@@ -67,7 +67,7 @@ const skillsMicro_fetchFavoriteSkills = async function (requestData, response: G
     }
 }
 
-const skillsMicro_fetchUserSkillProgress = async function (requestData, response: GenericApiResponse, sessionUser) {
+const skillsMicro_fetchUserSkillStepProgress = async function (requestData, response: GenericApiResponse, sessionUser) {
     const { sequelize } = diContext.container;
     try {
         const UserSkillStepProgressModel = UserSkillStepProgressModelIniter(sequelize, Sequelize);
@@ -75,11 +75,18 @@ const skillsMicro_fetchUserSkillProgress = async function (requestData, response
         const { skillId } = requestData;
         const userId = sessionUser.id;
 
-        const userSkillProgress = await UserSkillStepProgressModel.findAll({
+        if (isNaN(skillId)) {
+            return response.failJSONString();
+        }
+
+        const nSkillId = Number(skillId);
+
+        const userSkillProgress = await UserSkillStepProgressModel.findOne({
             where: {
-                skillId,
+                skillId : nSkillId,
                 userId
-            }, raw: true
+            }, 
+            raw: true
         });
 
         return response.okJSONString(userSkillProgress);
@@ -210,8 +217,16 @@ const skillsMicro_updateUserSkillStepProgress = async function (requestData, res
     try {
         const UserSkillStepProgressModel = UserSkillStepProgressModelIniter(sequelize, Sequelize);
 
-        const { skillId, skillStepId, newFlag } = requestData;
+        const { skillId, skillStepId, isCompleted } = requestData;
         const userId = sessionUser.id;
+
+        console.log("skillsMicro_updateUserSkillStepProgress");
+        console.log(requestData);
+
+        if (isNaN(skillId) || isNaN(skillStepId)) {
+            return response.failJSONString();
+        }
+
         const nSkillId = Number(skillId);
         const nSkillStepId = Number(skillStepId);
 
@@ -223,20 +238,24 @@ const skillsMicro_updateUserSkillStepProgress = async function (requestData, res
         });
 
         const { progress } = userSkillProgress;
+        // JSON.parse etc is because of typescript warning...
         const progressToUpdate = progress || JSON.parse(JSON.stringify({}));
 
         userSkillProgress.progress = {
             ...progressToUpdate,
             [`skill_${nSkillId}`]: {
                 ...(progressToUpdate[`skill_${nSkillId}`]),
-                [nSkillStepId]: newFlag
+                [nSkillStepId]: isCompleted
             }
         };
+
+        console.log(userSkillProgress.progress);
 
         userSkillProgress.save();
 
         return response.okJSONString(userSkillProgress);
     } catch (err) {
+        console.log(err);
         return response.failJSONString();
     }
 }
@@ -283,8 +302,8 @@ amqp.connect(MQ_CONN_STR, function (error0, connection) {
                 responseDataHolder.data = await skillsMicro_fetchAllSkills(data, response);
             } else if (command === "FETCH_ALL_FAVORITE_SKILLS") {
                 responseDataHolder.data = await skillsMicro_fetchFavoriteSkills(data, response, sessionUser);
-            } else if (command === "FETCH_USER_SKILL_PROGRESS") {
-                responseDataHolder.data = await skillsMicro_fetchUserSkillProgress(data, response, sessionUser);
+            } else if (command === "FETCH_USER_SKILL_STEP_PROGRESS") {
+                responseDataHolder.data = await skillsMicro_fetchUserSkillStepProgress(data, response, sessionUser);
             } else if (command === "FETCH_SKILL_TYPES") {
                 responseDataHolder.data = await skillsMicro_fetchSkillTypes(data, response);
             } else if (command === "FETCH_SKILL_STEPS") {

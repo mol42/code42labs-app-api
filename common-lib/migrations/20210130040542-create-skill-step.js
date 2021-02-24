@@ -4,6 +4,7 @@ module.exports = {
     await queryInterface.createTable('skill_steps', {
       id: { type: Sequelize.BIGINT, primaryKey: true, autoIncrement: true },
       skillId: { type: Sequelize.INTEGER, field: "skill_id" },
+      name: { type: Sequelize.TEXT, field: "name" },
       order: { type: Sequelize.INTEGER, field: "order" },
       shortDescription: { type: Sequelize.TEXT, field: "short_description" },
       longDescription: { type: Sequelize.TEXT, field: "long_description" },

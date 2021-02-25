@@ -15,8 +15,8 @@ module.exports = {
       summary: { type: Sequelize.TEXT, field: "summary" },
       content: { type: Sequelize.TEXT, field: "content" },
       languageId: { type: Sequelize.INTEGER, field: "language_id" },
-      publishDate: { type: DataTypes.DATE, field: "publish_date" },
-      isPublished: { type: DataTypes.BOOLEAN, field: "is_published" },
+      publishDate: { type: Sequelize.DATE, field: "publish_date" },
+      isPublished: { type: Sequelize.BOOLEAN, field: "is_published" },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -14,6 +14,7 @@ module.exports = {
       largeImage: { type: Sequelize.TEXT, field: "large_image" },
       summary: { type: Sequelize.TEXT, field: "summary" },
       content: { type: Sequelize.TEXT, field: "content" },
+      contentUrl: { type: Sequelize.TEXT, field: "content_url" },
       languageId: { type: Sequelize.INTEGER, field: "language_id" },
       publishDate: { type: Sequelize.DATE, field: "publish_date" },
       isPublished: { type: Sequelize.BOOLEAN, field: "is_published" },
